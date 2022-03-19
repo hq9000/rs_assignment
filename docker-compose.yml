@@ -12,6 +12,8 @@ services:
       - ".:/app"
     ports:
       - "7777:80"
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
 
   database:
     image: mysql:8
@@ -19,3 +21,8 @@ services:
       MYSQL_ROOT_PASSWORD: Test123123
     ports:
       - "3311:3306"
+
+
+networks:
+  default:
+    name: roadsurfer_assignment
