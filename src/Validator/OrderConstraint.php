@@ -1,6 +1,6 @@
 <?php
 
-namespace
+namespace Roadsurfer\Validator;
 
 use Symfony\Component\Validator\Constraint;
 
