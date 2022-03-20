@@ -14,6 +14,8 @@ class ExtendCounterGridCommand extends Command
 {
     use CounterGridServiceAware;
 
+    protected static $defaultName = 'roadsurfer:extend_grid';
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->getCounterGridService()->extendCounterGrid();

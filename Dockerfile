@@ -37,3 +37,6 @@ RUN pecl install -f xdebug \
     && docker-php-ext-enable xdebug
 
 RUN docker-php-ext-install pdo_mysql
+
+# needed for easier installation of some dev packages
+RUN apt-get install p7zip-full
