@@ -18,3 +18,9 @@ services:
       - [ setCounterGridService, [ '@Roadsurfer\Service\CounterGridService' ] ]
     tags:
       - { name: console.command }
+
+  Roadsurfer\Validator\OrderConstraintValidator:
+    calls:
+      - [ setCounterGridService, [ '@Roadsurfer\Service\CounterGridService' ] ]
+    tags:
+      - { name: validator.constraint_validator }

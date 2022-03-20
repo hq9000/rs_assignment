@@ -21,8 +21,72 @@ abstract class AbstractDailyStationEquipmentCounter
     private EquipmentType $equipmentType;
 
     #[ORM\Column(type: "integer", options: ["unsigned" => true])]
-    private int $counter = 0;
+    private int $count = 0;
 
     #[ORM\Column(type: "string", length: DayCodeUtil::LENGTH_OF_DAY_CODE)]
     private string $dayCode;
+
+    /**
+     * @return int
+     */
+    public function getCount(): int
+    {
+        return $this->count;
+    }
+
+    /**
+     * @param int $count
+     */
+    public function setCount(int $count): void
+    {
+        $this->count = $count;
+    }
+
+    /**
+     * @return EquipmentType
+     */
+    public function getEquipmentType(): EquipmentType
+    {
+        return $this->equipmentType;
+    }
+
+    /**
+     * @param EquipmentType $equipmentType
+     */
+    public function setEquipmentType(EquipmentType $equipmentType): void
+    {
+        $this->equipmentType = $equipmentType;
+    }
+
+    /**
+     * @return Station
+     */
+    public function getStation(): Station
+    {
+        return $this->station;
+    }
+
+    /**
+     * @param Station $station
+     */
+    public function setStation(Station $station): void
+    {
+        $this->station = $station;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDayCode(): string
+    {
+        return $this->dayCode;
+    }
+
+    /**
+     * @param string $dayCode
+     */
+    public function setDayCode(string $dayCode): void
+    {
+        $this->dayCode = $dayCode;
+    }
 }
