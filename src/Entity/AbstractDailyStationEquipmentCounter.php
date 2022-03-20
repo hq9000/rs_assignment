@@ -7,6 +7,12 @@ use Roadsurfer\Entity\Mixin\HavingId;
 use Roadsurfer\Util\DayCodeUtil;
 
 #[ORM\Entity]
+#[ORM\Table(name: "daily_station_equipment_counters")]
+#[ORM\DiscriminatorColumn(name: "dtype", type: "string", length: 6)]
+#[ORM\DiscriminatorMap([
+    "onhand" => OnHandDailyStationEquipmentCounter::class,
+    "booked" => BookedDailyStationEquipmentCounter::class,
+])]
 #[ORM\InheritanceType("SINGLE_TABLE")]
 #[ORM\UniqueConstraint(columns: ["dtype", "station_id", "equipment_type_id", "day_code"])]
 #[ORM\Index(columns: ["station_id", "day_code"])]
@@ -15,9 +21,11 @@ abstract class AbstractDailyStationEquipmentCounter
     use HavingId;
 
     #[ORM\ManyToOne(targetEntity: Station::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private Station $station;
 
     #[ORM\ManyToOne(targetEntity: EquipmentType::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private EquipmentType $equipmentType;
 
     #[ORM\Column(type: "integer", options: ["unsigned" => true])]

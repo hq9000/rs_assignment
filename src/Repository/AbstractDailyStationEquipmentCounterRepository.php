@@ -26,12 +26,12 @@ class AbstractDailyStationEquipmentCounterRepository extends EntityRepository
         string $startDayCode,
         string $endDayCode
     ) {
-        $qb = $this->createQueryBuilder('qb');
+        $qb = $this->createQueryBuilder('c');
         $qb->select('c');
 
         $qb->andWhere('c.station = :station');
         $qb->andWhere('c.equipmentType = :equipmentType');
-        $qb->andWhere($qb->expr()->between('c.dayCode', ':from', ':to'));
+        $qb->andWhere('c.dayCode BETWEEN :from AND :to');
 
         $qb->setParameters(
             [

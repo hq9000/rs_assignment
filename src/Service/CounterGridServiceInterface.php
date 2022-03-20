@@ -11,7 +11,7 @@ use Roadsurfer\Entity\Station;
 
 interface CounterGridServiceInterface
 {
-    public function extendCounterGrid(): void;
+    public function extendCounterGrid(int $daysInFutureToExtend): void;
 
     public function applyOrder(Order $order);
 

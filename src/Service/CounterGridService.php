@@ -13,7 +13,6 @@ use Roadsurfer\Entity\Order;
 use Roadsurfer\Entity\Station;
 use Roadsurfer\Repository\AbstractDailyStationEquipmentCounterRepository;
 use Roadsurfer\Repository\OnHandDailyStationEquipmentCounterRepository;
-use Roadsurfer\Util\DatePolicy;
 use Roadsurfer\Util\DayCodeUtil;
 
 class CounterGridService implements CounterGridServiceInterface
@@ -22,15 +21,25 @@ class CounterGridService implements CounterGridServiceInterface
     use CurrentTimeProviderAware;
     use EntityManagerAware;
 
-    public function extendCounterGrid(): void
+    public function extendCounterGrid(int $daysInFutureToExtend): void
     {
         $allStations       = $this->getAllStations();
         $allEquipmentTypes = $this->getAllEquipmentTypes();
 
         foreach ($allStations as $station) {
             foreach ($allEquipmentTypes as $type) {
-                $this->extendInternal($station, $type, OnHandDailyStationEquipmentCounter::class);
-                $this->extendInternal($station, $type, BookedDailyStationEquipmentCounter::class);
+                $this->extendInternal(
+                    $station,
+                    $type,
+                    OnHandDailyStationEquipmentCounter::class,
+                    $daysInFutureToExtend
+                );
+                $this->extendInternal(
+                    $station,
+                    $type,
+                    BookedDailyStationEquipmentCounter::class,
+                    $daysInFutureToExtend
+                );
             }
         }
     }
@@ -88,11 +97,12 @@ class CounterGridService implements CounterGridServiceInterface
     private function extendInternal(
         Station $station,
         EquipmentType $equipmentType,
-        string $counterClass
+        string $counterClass,
+        int $daysInFutureToExtend
     ) {
         $currentDateTime = $this->getCurrentTimeProvider()->getCurrentDateTime();
         $lastDateTime    = $this->getCurrentTimeProvider()->getCurrentDateTime();
-        $lastDateTime->modify('add ' . DatePolicy::NUM_FUTURE_DAYS_TO_ENSURE_COUNTER_GRID_FOR . ' day');
+        $lastDateTime->modify('+' . $daysInFutureToExtend . ' days');
 
         /** @var AbstractDailyStationEquipmentCounterRepository $repo */
         $repo = $this->getEntityManager()->getRepository($counterClass);
@@ -121,6 +131,7 @@ class CounterGridService implements CounterGridServiceInterface
                     $defaultCountValue
                 );
             }
+            $currentDateTime->modify('+1 day');
         }
 
         $this->getEntityManager()->flush();
@@ -179,8 +190,8 @@ class CounterGridService implements CounterGridServiceInterface
         assert(OnHandDailyStationEquipmentCounter::class == $counterClass);
 
         $repo = $this->getEntityManager()->getRepository($counterClass);
-        /** @var AbstractDailyStationEquipmentCounter|null $lastCounter */
-        $lastCounter = $repo->findBy(
+        /** @var AbstractDailyStationEquipmentCounter[] $lastCounterSearchResults */
+        $lastCounterSearchResults = $repo->findBy(
             criteria: [
             'station'       => $station,
             'equipmentType' => $equipmentType,
@@ -191,7 +202,11 @@ class CounterGridService implements CounterGridServiceInterface
             limit: 1
         );
 
-        return $lastCounter?->getCount() ?? 0;
+        if (!$lastCounterSearchResults) {
+            return 0;
+        } else {
+            return $lastCounterSearchResults[0]->getCount();
+        }
     }
 
     private function createNewCounterEntity(
