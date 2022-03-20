@@ -9,4 +9,8 @@ use Roadsurfer\Repository\OnHandDailyStationEquipmentCounterRepository;
 class OnHandDailyStationEquipmentCounter extends AbstractDailyStationEquipmentCounter
 {
 
+    public function getReportLabel(): string
+    {
+        return "on hand";
+    }
 }

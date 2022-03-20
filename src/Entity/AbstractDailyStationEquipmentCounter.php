@@ -97,4 +97,6 @@ abstract class AbstractDailyStationEquipmentCounter
     {
         $this->dayCode = $dayCode;
     }
+
+    abstract public function getReportLabel(): string;
 }

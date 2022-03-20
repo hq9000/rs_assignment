@@ -4,8 +4,8 @@
 namespace Roadsurfer\Controller;
 
 use Roadsurfer\DependencyInjection\CounterGridServiceAware;
+use Roadsurfer\Entity\AbstractDailyStationEquipmentCounter;
 use Roadsurfer\Entity\Station;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -25,8 +25,24 @@ class ApiController
         string $startDayCode,
         string $endDayCode
     ): JsonResponse {
+        $allCounters = $this->getCounterGridService()->getAllCounters($station, $startDayCode, $endDayCode);
+        return new JsonResponse($this->presentCountersAsReport($allCounters));
+    }
 
-        return new JsonResponse(['hello' => 'world']);
+    /**
+     * @param AbstractDailyStationEquipmentCounter[] $allCounters
+     *
+     * @return array
+     */
+    private function presentCountersAsReport($allCounters): array
+    {
+        $report = [];
+
+        foreach ($allCounters as $counter) {
+            $report[$counter->getDayCode()][$counter->getReportLabel()] = $counter->getCount();
+        }
+
+        return $report;
     }
 
 }

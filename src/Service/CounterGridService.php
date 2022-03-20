@@ -229,4 +229,8 @@ class CounterGridService implements CounterGridServiceInterface
         $this->getEntityManager()->persist($counterEntity);
     }
 
+    public function getAllCounters(Station $station, string $startDayCode, string $endDayCode)
+    {
+        // TODO: Implement getAll() method.
+    }
 }
