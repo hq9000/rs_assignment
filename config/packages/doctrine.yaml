@@ -13,8 +13,8 @@ doctrine:
             App:
                 is_bundle: false
                 dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
+                prefix: 'Roadsurfer\Entity'
+                alias: Roadsurver
 
 when@test:
     doctrine:

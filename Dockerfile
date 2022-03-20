@@ -35,3 +35,5 @@ ENV APP_ENV="local"
 
 RUN pecl install -f xdebug \
     && docker-php-ext-enable xdebug
+
+RUN docker-php-ext-install pdo_mysql
