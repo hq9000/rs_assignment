@@ -9,6 +9,7 @@ use Roadsurfer\Util\DayCodeUtil;
 #[ORM\Entity]
 #[ORM\InheritanceType("SINGLE_TABLE")]
 #[ORM\UniqueConstraint(columns: ["dtype", "station_id", "equipment_type_id", "day_code"])]
+#[ORM\Index(columns: ["station_id", "day_code"])]
 abstract class AbstractDailyStationEquipmentCounter
 {
     use HavingId;
@@ -22,9 +23,6 @@ abstract class AbstractDailyStationEquipmentCounter
     #[ORM\Column(type: "integer", options: ["unsigned" => true])]
     private int $counter = 0;
 
-    #[ORM\Column(type: "text", options: [
-            "length" => DayCodeUtil::LENGTH_OF_DAY_CODE,
-        ]
-    )]
+    #[ORM\Column(type: "string", length: DayCodeUtil::LENGTH_OF_DAY_CODE)]
     private string $dayCode;
 }

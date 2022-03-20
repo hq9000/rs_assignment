@@ -15,15 +15,11 @@ class Order
     use HavingId;
 
     #[NotNull]
-    #[ORM\Column(type: "text", nullable: false, options: [
-        "length" => DayCodeUtil::LENGTH_OF_DAY_CODE,
-    ])]
+    #[ORM\Column(type: "string", length: DayCodeUtil::LENGTH_OF_DAY_CODE, nullable: false)]
     private ?DateTime $startDayCode = null;
 
     #[NotNull]
-    #[ORM\Column(type: "text", nullable: false, options: [
-        "length" => DayCodeUtil::LENGTH_OF_DAY_CODE,
-    ])]
+    #[ORM\Column(type: "string", length: DayCodeUtil::LENGTH_OF_DAY_CODE, nullable: false)]
     private ?string $endDayCode = null;
 
     #[NotNull]
