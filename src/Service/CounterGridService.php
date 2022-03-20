@@ -13,7 +13,6 @@ use Roadsurfer\Entity\Station;
 
 class CounterGridService implements CounterGridServiceInterface
 {
-    public const NUM_FUTURE_DAYS_TO_ENSURE_COUNTER_GRID_FOR = 365;
 
     use CurrentTimeProviderAware;
     use EntityManagerAware;
@@ -57,6 +56,17 @@ class CounterGridService implements CounterGridServiceInterface
         }
     }
 
+    public function getOnHandCounters(
+        Station $station,
+        EquipmentType $equipmentType,
+        string $startDayCode,
+        string $endDayCode
+    ) {
+        $repo = $this->getEntityManager()->getRepository(OnHandDailyStationEquipmentCounter::class);
+
+        return $repo->findBy
+    }
+
 
     private function extendInternal(
         Station $station,
@@ -89,6 +99,7 @@ class CounterGridService implements CounterGridServiceInterface
      */
     private function getAllStations()
     {
+
     }
 
     /**
@@ -96,6 +107,7 @@ class CounterGridService implements CounterGridServiceInterface
      */
     private function getAllEquipmentTypes()
     {
+
     }
 
     private function changeOnHandEquipmentCount(
@@ -113,6 +125,5 @@ class CounterGridService implements CounterGridServiceInterface
         int $count
     ) {
     }
-
 
 }
