@@ -8,6 +8,6 @@ use DateTime;
 
 interface CurrentTimeProviderInterface
 {
-    public function getCurrentTime(): DateTime;
+    public function getCurrentDateTime(): DateTime;
 
 }

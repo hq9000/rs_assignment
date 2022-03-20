@@ -9,7 +9,7 @@ use DateTime;
 class CurrentTimeProvider implements CurrentTimeProviderInterface
 {
 
-    public function getCurrentTime(): DateTime
+    public function getCurrentDateTime(): DateTime
     {
         return new DateTime("now");
     }
