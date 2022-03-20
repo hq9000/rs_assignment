@@ -5,11 +5,16 @@ namespace Roadsurfer\Service;
 
 use Roadsurfer\DependencyInjection\CurrentTimeProviderAware;
 use Roadsurfer\DependencyInjection\EntityManagerAware;
+use Roadsurfer\Entity\AbstractDailyStationEquipmentCounter;
 use Roadsurfer\Entity\BookedDailyStationEquipmentCounter;
 use Roadsurfer\Entity\EquipmentType;
 use Roadsurfer\Entity\OnHandDailyStationEquipmentCounter;
 use Roadsurfer\Entity\Order;
 use Roadsurfer\Entity\Station;
+use Roadsurfer\Repository\AbstractDailyStationEquipmentCounterRepository;
+use Roadsurfer\Repository\OnHandDailyStationEquipmentCounterRepository;
+use Roadsurfer\Util\DatePolicy;
+use Roadsurfer\Util\DayCodeUtil;
 
 class CounterGridService implements CounterGridServiceInterface
 {
@@ -56,15 +61,27 @@ class CounterGridService implements CounterGridServiceInterface
         }
     }
 
+
+    public function applyEquipmentShipment(Station $station, EquipmentType $equipmentType, string $dayCode, int $count)
+    {
+        $this->changeOnHandEquipmentCount(
+            $station,
+            $dayCode,
+            $equipmentType,
+            $count
+        );
+    }
+
     public function getOnHandCounters(
         Station $station,
         EquipmentType $equipmentType,
         string $startDayCode,
         string $endDayCode
     ) {
+        /** @var OnHandDailyStationEquipmentCounterRepository $repo */
         $repo = $this->getEntityManager()->getRepository(OnHandDailyStationEquipmentCounter::class);
 
-        return $repo->findBy
+        return $repo->getCounters($station, $equipmentType, $startDayCode, $endDayCode);
     }
 
 
@@ -73,10 +90,97 @@ class CounterGridService implements CounterGridServiceInterface
         EquipmentType $equipmentType,
         string $counterClass
     ) {
+        $currentDateTime = $this->getCurrentTimeProvider()->getCurrentDateTime();
+        $lastDateTime    = $this->getCurrentTimeProvider()->getCurrentDateTime();
+        $lastDateTime->modify('add ' . DatePolicy::NUM_FUTURE_DAYS_TO_ENSURE_COUNTER_GRID_FOR . ' day');
 
+        /** @var AbstractDailyStationEquipmentCounterRepository $repo */
         $repo = $this->getEntityManager()->getRepository($counterClass);
 
-        $lastCell = $repo->findBy(
+        $startDateCode = DayCodeUtil::generateDayCode($currentDateTime);
+        $endDateCode   = DayCodeUtil::generateDayCode($lastDateTime);
+
+        $existingCounters = $repo->getCounters($station, $equipmentType, $startDateCode, $endDateCode);
+
+        // building a hashmap for quicker lookup
+        $existingCountersMap = [];
+        foreach ($existingCounters as $counter) {
+            $existingCountersMap[$counter->getDayCode()] = $counter;
+        }
+
+        $defaultCountValue = $this->determineDefaultValue($station, $equipmentType, $counterClass);
+
+        while ($currentDateTime <= $lastDateTime) {
+            $dayCode = DayCodeUtil::generateDayCode($currentDateTime);
+            if (!isset($existingCountersMap[$dayCode])) {
+                $this->createNewCounterEntity(
+                    $station,
+                    $equipmentType,
+                    $counterClass,
+                    $dayCode,
+                    $defaultCountValue
+                );
+            }
+        }
+
+        $this->getEntityManager()->flush();
+
+    }
+
+    /**
+     * @return Iterable[Station]
+     */
+    private function getAllStations()
+    {
+        return $this->getEntityManager()->getRepository(Station::class)->findAll();
+    }
+
+    /**
+     * @return Iterable[EquipmentType]
+     */
+    private function getAllEquipmentTypes()
+    {
+        return $this->getEntityManager()->getRepository(EquipmentType::class)->findAll();
+
+    }
+
+    private function changeOnHandEquipmentCount(
+        Station $station,
+        string $dayCode,
+        EquipmentType $equipmentType,
+        int $delta
+    ) {
+        /** @var AbstractDailyStationEquipmentCounterRepository $repo */
+        $repo = $this->getEntityManager()->getRepository(OnHandDailyStationEquipmentCounter::class);
+        $repo->incrementFutureCounters($station, $equipmentType, $dayCode, $delta);
+    }
+
+    private function changeBookedEquipmentCount(
+        Station $station,
+        string $dayCode,
+        EquipmentType $getEquipmentType,
+        int $count
+    ) {
+        /** @var AbstractDailyStationEquipmentCounterRepository $repo */
+        $repo = $this->getEntityManager()->getRepository(BookedDailyStationEquipmentCounter::class);
+        $repo->incrementOneCounter($station, $getEquipmentType, $dayCode, $count);
+    }
+
+    private function determineDefaultValue(
+        Station $station,
+        EquipmentType $equipmentType,
+        string $counterClass
+    ): int {
+
+        if (BookedDailyStationEquipmentCounter::class == $counterClass) {
+            return 0; // this kind of counter is always 0 in the beginning
+        }
+
+        assert(OnHandDailyStationEquipmentCounter::class == $counterClass);
+
+        $repo = $this->getEntityManager()->getRepository($counterClass);
+        /** @var AbstractDailyStationEquipmentCounter|null $lastCounter */
+        $lastCounter = $repo->findBy(
             criteria: [
             'station'       => $station,
             'equipmentType' => $equipmentType,
@@ -87,43 +191,27 @@ class CounterGridService implements CounterGridServiceInterface
             limit: 1
         );
 
-
-        // 1. find the last cell in the grid
-        // 2. create needed cells into the future, the value of counter is either 0
-        //    or the value in the last cell
-
+        return $lastCounter?->getCount() ?? 0;
     }
 
-    /**
-     * @return Iterable[Station]
-     */
-    private function getAllStations()
-    {
-
-    }
-
-    /**
-     * @return Iterable[EquipmentType]
-     */
-    private function getAllEquipmentTypes()
-    {
-
-    }
-
-    private function changeOnHandEquipmentCount(
+    private function createNewCounterEntity(
         Station $station,
-        string $dayCode,
         EquipmentType $equipmentType,
-        int $delta
-    ) {
-    }
-
-    private function changeBookedEquipmentCount(
-        Station $station,
+        string $counterClass,
         string $dayCode,
-        EquipmentType $getEquipmentType,
-        int $count
+        int $defaultCountValue
     ) {
+        /** @var AbstractDailyStationEquipmentCounter $counterEntity */
+        $counterEntity = new $counterClass;
+
+        assert($counterEntity instanceof AbstractDailyStationEquipmentCounter);
+
+        $counterEntity->setDayCode($dayCode);
+        $counterEntity->setEquipmentType($equipmentType);
+        $counterEntity->setStation($station);
+        $counterEntity->setCount($defaultCountValue);
+
+        $this->getEntityManager()->persist($counterEntity);
     }
 
 }
