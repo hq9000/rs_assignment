@@ -7,7 +7,6 @@ namespace Roadsurfer\Repository;
 use Doctrine\ORM\EntityRepository;
 use Roadsurfer\Entity\AbstractDailyStationEquipmentCounter;
 use Roadsurfer\Entity\EquipmentType;
-use Roadsurfer\Entity\OnHandDailyStationEquipmentCounter;
 use Roadsurfer\Entity\Station;
 
 class AbstractDailyStationEquipmentCounterRepository extends EntityRepository

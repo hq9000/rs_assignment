@@ -24,3 +24,14 @@ services:
       - [ setCounterGridService, [ '@Roadsurfer\Service\CounterGridService' ] ]
     tags:
       - { name: validator.constraint_validator }
+
+
+  Roadsurfer\Controller\ApiController:
+    calls:
+      - [setCounterGridService, ['@Roadsurfer\Service\CounterGridService']]
+
+  Roadsurfer\DataFixtures\AppFixtures:
+    calls:
+      - [ setCounterGridService, [ '@Roadsurfer\Service\CounterGridService' ] ]
+    tags:
+      - {name: doctrine.fixture.orm}
