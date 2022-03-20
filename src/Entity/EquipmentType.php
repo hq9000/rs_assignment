@@ -2,8 +2,8 @@
 
 namespace Roadsurfer\Entity;
 
-use Roadsurfer\Entity\Traits\HavingId;
-use Roadsurfer\Entity\Traits\HavingName;
+use Roadsurfer\Entity\Mixin\HavingId;
+use Roadsurfer\Entity\Mixin\HavingName;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Roadsurfer\Entity\Traits;
+namespace Roadsurfer\Entity\Mixin;
 
 use Doctrine\ORM\Mapping as ORM;
 

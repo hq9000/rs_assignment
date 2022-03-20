@@ -3,19 +3,15 @@
 namespace Roadsurfer\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Roadsurfer\Entity\Traits\HavingId;
-
-# todo: add a db-level constraint preventing two counters to exist for the same day
+use Roadsurfer\Entity\Mixin\HavingId;
+use Roadsurfer\Util\DayCodeUtil;
 
 #[ORM\Entity]
 #[ORM\InheritanceType("SINGLE_TABLE")]
+#[ORM\UniqueConstraint(columns: ["dtype", "station_id", "equipment_type_id", "day_code"])]
 abstract class AbstractDailyStationEquipmentCounter
 {
     use HavingId;
-
-    # 20220321
-    # 12345678 => 8 characters
-    const LENGTH_OF_DAY_CODE = 8;
 
     #[ORM\ManyToOne(targetEntity: Station::class)]
     private Station $station;
@@ -27,7 +23,7 @@ abstract class AbstractDailyStationEquipmentCounter
     private int $counter = 0;
 
     #[ORM\Column(type: "text", options: [
-            "length" => self::LENGTH_OF_DAY_CODE,
+            "length" => DayCodeUtil::LENGTH_OF_DAY_CODE,
         ]
     )]
     private string $dayCode;
