@@ -17,10 +17,12 @@ class OrderEquipmentCounter
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: "orderEquipmentCounters")]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[Assert\NotNull()]
     private Order $order;
 
     #[ORM\ManyToOne(targetEntity: EquipmentType::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull()]
     private ?EquipmentType $equipmentType = null;
 
     #[ORM\Column(type: "integer")]

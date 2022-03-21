@@ -2,33 +2,32 @@
 
 namespace Roadsurfer\Entity;
 
-use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Roadsurfer\Entity\Mixin\HavingId;
 use Roadsurfer\Repository\OrderRepository;
 use Roadsurfer\Util\DayCodeUtil;
-use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 class Order
 {
     use HavingId;
 
-    #[NotNull]
+    #[Assert\NotNull]
     #[ORM\Column(type: "string", length: DayCodeUtil::LENGTH_OF_DAY_CODE, nullable: false)]
     private ?string $startDayCode = null;
 
-    #[NotNull]
+    #[Assert\NotNull]
     #[ORM\Column(type: "string", length: DayCodeUtil::LENGTH_OF_DAY_CODE, nullable: false)]
     private ?string $endDayCode = null;
 
-    #[NotNull]
+    #[Assert\NotNull]
     #[ORM\ManyToOne(targetEntity: Station::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Station $startStation = null;
 
-    #[NotNull]
+    #[Assert\NotNull]
     #[ORM\ManyToOne(targetEntity: Station::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Station $endStation = null;
@@ -38,6 +37,7 @@ class Order
      * @var OrderEquipmentCounter[]
      */
     #[ORM\OneToMany(mappedBy: "order", targetEntity: OrderEquipmentCounter::class)]
+    #[Assert\Valid()]
     private Collection|array $orderEquipmentCounters;
 
     /**

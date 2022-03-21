@@ -25,6 +25,7 @@ class OrderConstraintValidator extends ConstraintValidator
 
         $order = $value; # syntactic sugar... sweet!
 
+        $this->validateInventory($order, $constraint);
         $this->validateDates($order, $constraint);
 
         if ($this->context->getViolations()) {
@@ -75,9 +76,9 @@ class OrderConstraintValidator extends ConstraintValidator
                     $this->context->buildViolation(
                         OrderConstraint::$willRunOutOfEquipmentMessage,
                         [
-                            '{{ station_name }}' => $order->getStartStation()->getName(),
+                            '{{ station_name }}'        => $order->getStartStation()->getName(),
                             '{{ equipment_type_name }}' => $counter->getEquipmentType()->getName(),
-                            '{{ day_code }}' => $counter->getDayCode(),
+                            '{{ day_code }}'            => $counter->getDayCode(),
                         ]
                     )->setCode(OrderConstraint::WILL_RUN_OUT_OF_EQUIPMENT_CODE)->addViolation();
                     break;
@@ -92,5 +93,20 @@ class OrderConstraintValidator extends ConstraintValidator
         $now->modify("add " . DatePolicy::NUM_FUTURE_DAYS_TO_ENSURE_COUNTER_GRID_FOR . " days");
 
         return DayCodeUtil::generateDayCode($now);
+    }
+
+    private function validateInventory(Order $order, OrderConstraint $constraint)
+    {
+        $seenIds = [];
+        foreach ($order->getOrderEquipmentCounters() as $counter) {
+            if (isset($seenIds[$counter->getEquipmentType()->getId()])) {
+                $this->context->buildViolation(OrderConstraint::$moreThanOneEntryForEquipmentType)->setParameters(
+                    [
+                        '{{ equipment_type_name }}' => $counter->getEquipmentType()->getName(),
+                    ]
+                );
+            }
+            $seenIds[$counter->getEquipmentType()->getId()] = true;
+        }
     }
 }
