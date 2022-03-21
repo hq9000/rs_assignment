@@ -25,7 +25,7 @@ class ApiController
         string $startDayCode,
         string $endDayCode
     ): JsonResponse {
-        $allCounters = $this->getCounterGridService()->getAllCounters($station, $startDayCode, $endDayCode);
+        $allCounters = $this->getCounterGridService()->getAllCountersOnStation($station, $startDayCode, $endDayCode);
         return new JsonResponse($this->presentCountersAsReport($allCounters));
     }
 

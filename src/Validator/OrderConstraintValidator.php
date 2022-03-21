@@ -63,7 +63,7 @@ class OrderConstraintValidator extends ConstraintValidator
     private function validateEquipmentAvailability(Order $order, OrderConstraint $constraint)
     {
         foreach ($order->getOrderEquipmentCounters() as $orderEquipmentCounter) {
-            $onHandCounters = $this->getCounterGridService()->getOnHandCounters(
+            $onHandCounters = $this->getCounterGridService()->getOnHandCountersOnStationForEquipmentType(
                 $order->getStartStation(),
                 $orderEquipmentCounter->getEquipmentType(),
                 $order->getStartDayCode(),

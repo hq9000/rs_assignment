@@ -21,7 +21,7 @@ class AbstractDailyStationEquipmentCounterRepository extends EntityRepository
      */
     public function getCounters(
         Station $station,
-        EquipmentType $equipmentType,
+        ?EquipmentType $equipmentType,
         string $startDayCode,
         string $endDayCode
     ) {
@@ -29,17 +29,24 @@ class AbstractDailyStationEquipmentCounterRepository extends EntityRepository
         $qb->select('c');
 
         $qb->andWhere('c.station = :station');
-        $qb->andWhere('c.equipmentType = :equipmentType');
+        if ($equipmentType) {
+            $qb->andWhere('c.equipmentType = :equipmentType');
+        }
         $qb->andWhere('c.dayCode BETWEEN :from AND :to');
 
-        $qb->setParameters(
+        $params =
             [
-                'station'       => $station,
-                'equipmentType' => $equipmentType,
-                'from'          => $startDayCode,
-                'to'            => $endDayCode,
-            ]
-        );
+                'station' => $station,
+                'from'    => $startDayCode,
+                'to'      => $endDayCode,
+            ];
+
+        if ($equipmentType) {
+            $params['equipment_type'] = $equipmentType;
+        }
+
+        $qb->setParameters($params);
+
 
         return $qb->getQuery()->execute();
     }

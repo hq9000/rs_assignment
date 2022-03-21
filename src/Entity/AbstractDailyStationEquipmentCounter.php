@@ -4,9 +4,10 @@ namespace Roadsurfer\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Roadsurfer\Entity\Mixin\HavingId;
+use Roadsurfer\Repository\AbstractDailyStationEquipmentCounterRepository;
 use Roadsurfer\Util\DayCodeUtil;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: AbstractDailyStationEquipmentCounterRepository::class)]
 #[ORM\Table(name: "daily_station_equipment_counters")]
 #[ORM\DiscriminatorColumn(name: "dtype", type: "string", length: 6)]
 #[ORM\DiscriminatorMap([

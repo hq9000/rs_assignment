@@ -23,7 +23,7 @@ interface CounterGridServiceInterface
      *
      * @return AbstractDailyStationEquipmentCounter[]
      */
-    public function getAllCounters(Station $station, string $startDayCode, string $endDayCode);
+    public function getAllCountersOnStation(Station $station, string $startDayCode, string $endDayCode);
 
     /**
      * @param Station $station
@@ -33,7 +33,7 @@ interface CounterGridServiceInterface
      *
      * @return OnHandDailyStationEquipmentCounter[]
      */
-    public function getOnHandCounters(
+    public function getOnHandCountersOnStationForEquipmentType(
         Station $station,
         EquipmentType $equipmentType,
         string $startDayCode,

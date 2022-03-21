@@ -81,7 +81,7 @@ class CounterGridService implements CounterGridServiceInterface
         );
     }
 
-    public function getOnHandCounters(
+    public function getOnHandCountersOnStationForEquipmentType(
         Station $station,
         EquipmentType $equipmentType,
         string $startDayCode,
@@ -91,6 +91,16 @@ class CounterGridService implements CounterGridServiceInterface
         $repo = $this->getEntityManager()->getRepository(OnHandDailyStationEquipmentCounter::class);
 
         return $repo->getCounters($station, $equipmentType, $startDayCode, $endDayCode);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllCountersOnStation(Station $station, string $startDayCode, string $endDayCode)
+    {
+        /** @var AbstractDailyStationEquipmentCounterRepository $repo */
+        $repo = $this->getEntityManager()->getRepository(AbstractDailyStationEquipmentCounter::class);
+        return $repo->getCounters($station, null, $startDayCode, $endDayCode);
     }
 
 
@@ -229,8 +239,4 @@ class CounterGridService implements CounterGridServiceInterface
         $this->getEntityManager()->persist($counterEntity);
     }
 
-    public function getAllCounters(Station $station, string $startDayCode, string $endDayCode)
-    {
-        // TODO: Implement getAll() method.
-    }
 }

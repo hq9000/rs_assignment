@@ -27,6 +27,7 @@ services:
 
 
   Roadsurfer\Controller\ApiController:
+    public: true
     calls:
       - [setCounterGridService, ['@Roadsurfer\Service\CounterGridService']]
 
