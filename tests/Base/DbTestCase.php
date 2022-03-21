@@ -7,7 +7,9 @@ namespace Roadsurfer\Tests\Base;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use Roadsurfer\Entity\EquipmentType;
+use Roadsurfer\Entity\Order;
 use Roadsurfer\Entity\Station;
+use Roadsurfer\Service\CounterGridService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Process\Process;
 
@@ -17,6 +19,14 @@ class DbTestCase extends KernelTestCase
      * @var EntityManager
      */
     protected static $entityManager;
+
+    public function tearDown(): void
+    {
+        $this->removeAll(Order::class);
+        $this->removeAll(EquipmentType::class);
+        $this->removeAll(Station::class);
+        parent::tearDown();
+    }
 
     public static function setUpBeforeClass(): void
     {
@@ -89,5 +99,10 @@ class DbTestCase extends KernelTestCase
     protected function getEntityCount(string $class): int
     {
         return self::$entityManager->getRepository($class)->count([]);
+    }
+
+    protected function getCounterGridServiceFromContainer(): CounterGridService
+    {
+        return $this->getContainer()->get(CounterGridService::class);
     }
 }

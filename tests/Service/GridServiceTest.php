@@ -21,11 +21,6 @@ use Roadsurfer\Util\ReportDataProducer;
  */
 class GridServiceTest extends DbTestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testExtendGrid()
     {
         $this->createStation('Berlin');
@@ -49,10 +44,6 @@ class GridServiceTest extends DbTestCase
         $service->setCurrentTimeProvider($this->createMockTimeProvider(new DateTime('2022-03-23 19:21 MSK')));
         $service->extendCounterGrid(20);
         $this->assertEquals(48, $this->getEntityCount(AbstractDailyStationEquipmentCounter::class));
-
-        $this->removeAll(EquipmentType::class);
-        $this->removeAll(Station::class);
-        $this->assertEquals(0, $this->getEntityCount(AbstractDailyStationEquipmentCounter::class));
     }
 
 

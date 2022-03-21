@@ -22,6 +22,7 @@ services:
   Roadsurfer\Validator\OrderConstraintValidator:
     calls:
       - [ setCounterGridService, [ '@Roadsurfer\Service\CounterGridService' ] ]
+      - [ setCurrentTimeProvider, [ '@Roadsurfer\Service\CurrentTimeProvider' ] ]
     tags:
       - { name: validator.constraint_validator }
 
@@ -29,13 +30,13 @@ services:
   Roadsurfer\Controller\ApiController:
     public: true
     calls:
-      - [setCounterGridService, ['@Roadsurfer\Service\CounterGridService']]
+      - [ setCounterGridService, [ '@Roadsurfer\Service\CounterGridService' ] ]
 
   Roadsurfer\DataFixtures\AppFixtures:
     calls:
       - [ setCounterGridService, [ '@Roadsurfer\Service\CounterGridService' ] ]
     tags:
-      - {name: doctrine.fixture.orm}
+      - { name: doctrine.fixture.orm }
 
   Roadsurfer\Form\OrderType:
     calls:

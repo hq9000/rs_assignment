@@ -3,14 +3,13 @@
 
 namespace Roadsurfer\Entity;
 
-
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Roadsurfer\Entity\Mixin\HavingId;
 use Roadsurfer\Repository\OrderRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
+#[ORM\Table(name: "order_equipment_counters")]
 class OrderEquipmentCounter
 {
     use HavingId;

@@ -7,9 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Roadsurfer\Entity\Mixin\HavingId;
 use Roadsurfer\Repository\OrderRepository;
 use Roadsurfer\Util\DayCodeUtil;
+use Roadsurfer\Validator\OrderConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
+#[ORM\Table(name: "orders")]
+#[OrderConstraint]
 class Order
 {
     use HavingId;
@@ -36,9 +39,9 @@ class Order
     /**
      * @var OrderEquipmentCounter[]
      */
-    #[ORM\OneToMany(mappedBy: "order", targetEntity: OrderEquipmentCounter::class)]
+    #[ORM\OneToMany(mappedBy: "order", targetEntity: OrderEquipmentCounter::class, cascade: ["PERSIST"])]
     #[Assert\Valid()]
-    private Collection|array $orderEquipmentCounters;
+    private Collection|array $orderEquipmentCounters = [];
 
     /**
      * @return OrderEquipmentCounter[]
@@ -53,6 +56,9 @@ class Order
      */
     public function setOrderEquipmentCounters(Collection|array $orderEquipmentCounters): void
     {
+        foreach ($orderEquipmentCounters as $counter) {
+            $counter->setOrder($this);
+        }
         $this->orderEquipmentCounters = $orderEquipmentCounters;
     }
 
