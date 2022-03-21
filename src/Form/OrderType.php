@@ -6,6 +6,8 @@ namespace Roadsurfer\Form;
 
 use Roadsurfer\DependencyInjection\EntityManagerAware;
 use Roadsurfer\Entity\Order;
+use Roadsurfer\Entity\Station;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -20,42 +22,34 @@ class OrderType extends AbstractType
     {
         $builder->add(
             'startStation',
-            ChoiceType::class,
+            EntityType::class,
             [
-                'choices' => $this->generateStationChoices(),
-                'required' => true
+                'class'   => Station::class,
+                'choices' => $this->getEntityManager()->getRepository(Station::class)->findAll(),
             ]
         );
         $builder->add(
             'endStation',
-            ChoiceType::class,
+            EntityType::class,
             [
-                'choices' => $this->generateStationChoices(),
-                'required' => true
+                'class'   => Station::class,
+                'choices' => $this->getEntityManager()->getRepository(Station::class)->findAll(),
             ]
         );
         $builder->add(
-            'startDayCode',
-            ChoiceType::class,
-            [
-                'choices' => $this->generateStationChoices(),
-                'required' => true
-            ]
+            'startDayCode'
         );
         $builder->add(
-            'endDayCode',
-            ChoiceType::class,
-            [
-                'choices' => $this->generateStationChoices(),
-                'required' => true
-            ]
+            'endDayCode'
         );
 
         $builder->add(
             'orderEquipmentCounters',
             CollectionType::class,
             [
-                'entry_type' => OrderEquipmentCounterType::class
+                'entry_type'   => OrderEquipmentCounterType::class,
+                'allow_add'    => true,
+                'allow_delete' => true,
             ]
         );
 
@@ -64,14 +58,26 @@ class OrderType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Order::class
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class'      => Order::class,
+                'csrf_protection' => false,
+            ]
+        );
         parent::configureOptions($resolver);
     }
 
     private function generateStationChoices(): array
     {
+        /** @var Station[] $allStations */
+        $allStations = $this->getEntityManager()->getRepository(Station::class)->findAll();
+
+        $res = [];
+        foreach ($allStations as $station) {
+            $res[$station->getName()] = $station->getId();
+        }
+
+        return $res;
     }
 
 }
