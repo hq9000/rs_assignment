@@ -70,7 +70,6 @@ class CounterGridService implements CounterGridServiceInterface
         }
     }
 
-
     public function applyEquipmentShipment(Station $station, EquipmentType $equipmentType, string $dayCode, int $count)
     {
         $this->changeOnHandEquipmentCount(
@@ -145,7 +144,6 @@ class CounterGridService implements CounterGridServiceInterface
         }
 
         $this->getEntityManager()->flush();
-
     }
 
     /**

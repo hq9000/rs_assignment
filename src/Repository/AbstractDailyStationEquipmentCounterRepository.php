@@ -42,7 +42,7 @@ class AbstractDailyStationEquipmentCounterRepository extends EntityRepository
             ];
 
         if ($equipmentType) {
-            $params['equipment_type'] = $equipmentType;
+            $params['equipmentType'] = $equipmentType;
         }
 
         $qb->setParameters($params);
@@ -57,8 +57,8 @@ class AbstractDailyStationEquipmentCounterRepository extends EntityRepository
         string $fromDayCode,
         int $delta
     ) {
-        $qb = $this->createQueryBuilder('qb');
-        $qb->update('c');
+        $qb = $this->createQueryBuilder('c');
+        $qb->update();
         $qb->where('c.dayCode >= :from_day_code');
         $qb->andWhere('c.equipmentType = :equipment_type');
         $qb->andWhere('c.station = :station');
@@ -78,8 +78,8 @@ class AbstractDailyStationEquipmentCounterRepository extends EntityRepository
 
     public function incrementOneCounter(Station $station, EquipmentType $equipmentType, string $dayCode, int $delta)
     {
-        $qb = $this->createQueryBuilder('qb');
-        $qb->update('c');
+        $qb = $this->createQueryBuilder('c');
+        $qb->update();
         $qb->where('c.dayCode = :day_code');
         $qb->andWhere('c.equipmentType = :equipment_type');
         $qb->andWhere('c.station = :station');

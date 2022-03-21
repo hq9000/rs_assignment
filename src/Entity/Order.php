@@ -97,9 +97,9 @@ class Order
     }
 
     /**
-     * @param DateTime|null $startDayCode
+     * @param string|null $startDayCode
      */
-    public function setStartDayCode(?DateTime $startDayCode): void
+    public function setStartDayCode(?string $startDayCode): void
     {
         $this->startDayCode = $startDayCode;
     }

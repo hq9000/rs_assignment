@@ -7,6 +7,7 @@ use Roadsurfer\DependencyInjection\CounterGridServiceAware;
 use Roadsurfer\Entity\AbstractDailyStationEquipmentCounter;
 use Roadsurfer\Entity\Station;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -22,10 +23,15 @@ class ApiController
     ]
     public function getEquipmentAvailability(
         Station $station,
-        string $startDayCode,
-        string $endDayCode
+        int $startDayCode,
+        int $endDayCode
     ): JsonResponse {
+
+        $this->validateDayCode($startDayCode);
+        $this->validateDayCode($endDayCode);
+
         $allCounters = $this->getCounterGridService()->getAllCountersOnStation($station, $startDayCode, $endDayCode);
+
         return new JsonResponse($this->presentCountersAsReport($allCounters));
     }
 
@@ -36,13 +42,14 @@ class ApiController
      */
     private function presentCountersAsReport($allCounters): array
     {
-        $report = [];
 
-        foreach ($allCounters as $counter) {
-            $report[$counter->getDayCode()][$counter->getReportLabel()] = $counter->getCount();
+    }
+
+    private function validateDayCode(int $code)
+    {
+        if ($code < 20000000 or $code > 30000000) {
+            throw new NotFoundHttpException();
         }
-
-        return $report;
     }
 
 }
