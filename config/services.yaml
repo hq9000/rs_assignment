@@ -31,6 +31,8 @@ services:
     public: true
     calls:
       - [ setCounterGridService, [ '@Roadsurfer\Service\CounterGridService' ] ]
+      - [ setFormFactory, [ '@form.factory' ] ]
+      - [ setEntityManager, [ '@doctrine.orm.default_entity_manager' ] ]
 
   Roadsurfer\DataFixtures\AppFixtures:
     calls:

@@ -13,8 +13,6 @@ use Symfony\Component\Form\FormFactory;
 
 class OrderTypeTest extends DbTestCase
 {
-
-
     public function testHappySubmission()
     {
 
