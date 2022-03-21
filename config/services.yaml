@@ -36,3 +36,15 @@ services:
       - [ setCounterGridService, [ '@Roadsurfer\Service\CounterGridService' ] ]
     tags:
       - {name: doctrine.fixture.orm}
+
+  Roadsurfer\Form\OrderType:
+    calls:
+      - [ setEntityManager, [ '@doctrine.orm.default_entity_manager' ] ]
+    tags:
+      - { name: form.type, alias: Roadsurfer\Form\OrderType }
+
+  Roadsurfer\Form\OrderEquipmentCounterType:
+    calls:
+      - [ setEntityManager, [ '@doctrine.orm.default_entity_manager' ] ]
+    tags:
+      - { name: form.type, alias: Roadsurfer\Form\OrderEquipmentCounterType }

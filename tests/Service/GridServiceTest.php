@@ -14,7 +14,11 @@ use Roadsurfer\Service\CurrentTimeProviderInterface;
 use Roadsurfer\Tests\Base\DbTestCase;
 use Roadsurfer\Util\ReportDataProducer;
 
-
+/**
+ * Class GridServiceTest
+ *
+ * @package Roadsurfer\Tests\Service
+ */
 class GridServiceTest extends DbTestCase
 {
     public function setUp(): void
