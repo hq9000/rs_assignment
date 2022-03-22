@@ -6,7 +6,8 @@
    - Managing vans (their location, availability, distance to travel etc. is a another significant aspect to be implemented)
 1. **observation**: the acceptable time quantisation seems to be "daily"
 1. **assumption**: it must be a critical issue if an order is placed and there will be no equiment to fulfill it in the starting station or if it will make fulfilling of some previously placed orders impossible. We are likely to need checking that in real time. 
-2. **assumption**: The orders are the most numerous objects in the system. Stations, types of equipments are a few dozens to a few hundreds at most. 
+1. **assumption**: The orders are the most numerous objects in the system. Stations, types of equipments are a few dozens to a few hundreds at most.
+1. **observation**: user authentication/authorization is out of scope
 
 ## Implementation
 ### Overall approach and tradeoffs
