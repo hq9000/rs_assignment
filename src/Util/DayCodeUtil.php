@@ -11,7 +11,7 @@ class DayCodeUtil
     # 20220321
     # 12345678 => 8 characters
     public const LENGTH_OF_DAY_CODE = 8;
-    private const FORMAT = 'Ymd';
+    public const FORMAT = 'Ymd';
 
     public static function generateDayCode(DateTime $dateTime): string
     {

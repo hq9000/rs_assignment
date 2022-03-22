@@ -3,13 +3,16 @@
 
 namespace Roadsurfer\Controller;
 
+use DateTime;
 use Roadsurfer\DependencyInjection\CounterGridServiceAware;
+use Roadsurfer\DependencyInjection\CurrentTimeProviderAware;
 use Roadsurfer\DependencyInjection\EntityManagerAware;
 use Roadsurfer\DependencyInjection\FormFactoryAware;
 use Roadsurfer\Entity\AbstractDailyStationEquipmentCounter;
 use Roadsurfer\Entity\Order;
 use Roadsurfer\Entity\Station;
 use Roadsurfer\Form\OrderType;
+use Roadsurfer\Util\DayCodeUtil;
 use Roadsurfer\Util\ReportDataProducer;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,20 +27,23 @@ class ApiController
     use CounterGridServiceAware;
     use FormFactoryAware;
     use EntityManagerAware;
+    use CurrentTimeProviderAware;
 
-    #[Route('/equipment_counters/{station}/{startDayCode}/{endDayCode}',
+    private const FROM_DAY_CODE_QUERY_PARAM_NAME = 'from';
+    const TO_DAY_CODE_QUERY_PARAM_NAME = 'to';
+    const DEFAULT_NUMBER_OF_DAYS_IN_REPORT = 7;
+
+    #[Route('/stations/{station}/equipment_usage_report',
         name: 'requirement_availability',
-        requirements: [
-            'startDayCode' => "\d+",
-            'endDayCode'   => "\d+"
-        ],
         methods: ["GET"]
     )]
-    public function getEquipmentAvailabilityReport(
+    public function getEquipmentUsageReport(
         Station $station,
-        int $startDayCode,
-        int $endDayCode
+        Request $request
     ): JsonResponse {
+
+        [ $startDayCode, $endDayCode ] = $this->extractStartAndEndDayCodesFromRequest($request);
+
         $this->validateDayCode($startDayCode);
         $this->validateDayCode($endDayCode);
         $allCounters = $this->getCounterGridService()->getAllCountersOnStation($station, $startDayCode, $endDayCode);
@@ -88,6 +94,29 @@ class ApiController
     private function createDataOnInvalidForm(FormInterface $form): array
     {
         return [];
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return int[]
+     */
+    private function extractStartAndEndDayCodesFromRequest(Request $request): array
+    {
+        $now = $this->getCurrentTimeProvider()->getCurrentDateTime();
+
+        $startDayCode = $request->query->get(self::FROM_DAY_CODE_QUERY_PARAM_NAME);
+        $startDayCode ??= DayCodeUtil::generateDayCode($now);
+
+        $endDayCode = $request->query->get(self::TO_DAY_CODE_QUERY_PARAM_NAME);
+        if (!$endDayCode) {
+            $resolvedStartDayTime = DateTime::createFromFormat(DayCodeUtil::FORMAT, $startDayCode);
+            $endOfRange            = clone $resolvedStartDayTime;
+            $endOfRange->modify("+" . self::DEFAULT_NUMBER_OF_DAYS_IN_REPORT . " days");
+            $endDayCode = DayCodeUtil::generateDayCode($endOfRange);
+        }
+
+        return [intval($startDayCode), intval($endDayCode)];
     }
 
 }

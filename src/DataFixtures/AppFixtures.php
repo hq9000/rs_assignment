@@ -15,17 +15,23 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $chair = new EquipmentType();
-        $chair->setName("Chair");
+        $chair->setName("Tooth brush");
         $manager->persist($chair);
 
         $toilet = new EquipmentType();
-        $toilet->setName("Toilet");
+        $toilet->setName("Towel");
         $manager->persist($toilet);
 
         $berlin = new Station();
         $berlin->setName("Berlin");
         $manager->persist($berlin);
 
+        $berlin = new Station();
+        $berlin->setName("Frankfurt");
+        $manager->persist($berlin);
+
         $manager->flush();
+
+        $this->getCounterGridService()->extendCounterGrid(365);
     }
 }

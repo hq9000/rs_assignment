@@ -8,6 +8,7 @@ use DateTime;
 use Roadsurfer\Entity\Order;
 use Roadsurfer\Entity\OrderEquipmentCounter;
 use Roadsurfer\Service\CounterGridService;
+use Roadsurfer\Service\CurrentTimeProvider;
 use Roadsurfer\Tests\Base\DbTestCase;
 use Roadsurfer\Util\DayCodeUtil;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -17,6 +18,10 @@ class OrderValidationTest extends DbTestCase
 {
     public function testValidateEmptyOrder()
     {
+        $currentTimeProvider = self::getContainer()->get(CurrentTimeProvider::class);
+
+        $now = DateTime::createFromFormat('Y-m-d H:i:s', '2022-03-21 06:32:33');
+        $currentTimeProvider->setFixatedTime($now);
         $validator = self::getContainer()->get('validator');
 
         $order = new Order;
@@ -39,11 +44,14 @@ class OrderValidationTest extends DbTestCase
         $berlin     = $this->createStation('Berlin');
         $toothBrush = $this->createEquipmentType('Tooth brush');
 
-        $today    = new DateTime('now');
+        $now = DateTime::createFromFormat('Y-m-d H:i:s', '2022-03-21 06:32:33');
+        self::getContainer()->get(CurrentTimeProvider::class)->setFixatedTime($now);
+
+        $today    = $now;
         $tomorrow = clone($today);
         $tomorrow->modify("+1 day");
 
-        $todayDayCode    = DayCodeUtil::generateDayCode($today);
+        $todayDayCode    = DayCodeUtil::generateDayCode($now);
         $tomorrowDayCode = DayCodeUtil::generateDayCode($tomorrow);
 
         $order = new Order();

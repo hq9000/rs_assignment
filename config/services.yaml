@@ -33,6 +33,7 @@ services:
       - [ setCounterGridService, [ '@Roadsurfer\Service\CounterGridService' ] ]
       - [ setFormFactory, [ '@form.factory' ] ]
       - [ setEntityManager, [ '@doctrine.orm.default_entity_manager' ] ]
+      - [ setCurrentTimeProvider, ['@Roadsurfer\Service\CurrentTimeProvider']]
 
   Roadsurfer\DataFixtures\AppFixtures:
     calls:
