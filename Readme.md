@@ -60,11 +60,29 @@
    }
 }
 ```
-#### Getting equipment usage report
+#### Creating a new order
 
+`POST /orders`
 
-## Additional features
+**body:**
+```json
+{
+    "startStation": 5,
+    "endStation": 6,
+    "startDayCode": "20220424",
+    "endDayCode": "20220426",
+    "orderEquipmentCounters": [
+        {
+            "equipmentType": 5,
+            "count": 1
+        },
+        {
+            "equipmentType": 6,
+            "count": 1
+        }
+    ]
+}
+```
+
+## Possible improvements
 - [ ] Use advisory locking to forbid any manipulations with grid when it is being extended to maintain integrity
-
-## Todos
-- [ ] Check if booked counters are working correctly
