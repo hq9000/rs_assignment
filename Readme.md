@@ -5,7 +5,7 @@
 1. **observation**: it seems that vans themselves are not too relevant to the task at hand. We are only concerned with "equipment". 
    - Managing vans (their location, availability, distance to travel etc. is a another huge aspect to be implemented)
 1. **observation**: the acceptable time quantisation seems to be "daily"
-1. **assumption**: it must be a critical issue if an order is placed and there will be no equiment to fulfill it in the starting station. We are likely to need checking that in real time. 
+1. **assumption**: it must be a critical issue if an order is placed and there will be no equiment to fulfill it in the starting station or if it will make fulfilling of some previously placed orders impossible. We are likely to need checking that in real time. 
 2. **assumption**: The orders are the most numerous objects in the system. Stations, types of equipments are a few dozens to a few hundreds at most. 
 
 ## Implementation
