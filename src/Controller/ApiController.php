@@ -93,7 +93,14 @@ class ApiController
 
     private function createDataOnInvalidForm(FormInterface $form): array
     {
-        return [];
+        $errors = $form->getErrors(deep: true, flatten: true);
+
+        $res    = [];
+        foreach ($errors as $error) {
+            $res[] = $error->getMessage();
+        }
+
+        return $res;
     }
 
     /**
