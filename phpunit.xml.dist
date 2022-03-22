@@ -8,7 +8,7 @@
     </coverage>
     <php>
         <env name="APP_ENV" value="test" force="true"/>
-        <env name="DATABASE_URL" value="mysql://root:Test123123@localhost:3306/roadsurfer_test" force="true"/>
+        <env name="DATABASE_URL" value="mysql://root:Test123123@127.0.0.1:3306/roadsurfer_test" force="true"/>
         <env name="KERNEL_CLASS" value="Roadsurfer\Kernel"/>
         <env name="BOOTSTRAP_CLEAR_CACHE_ENV" value="test"/>
     </php>
