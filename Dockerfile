@@ -31,7 +31,16 @@ WORKDIR /app
 FROM base as local
 
 ENV PHP_IDE_CONFIG="serverName=roadsurfer_assignment"
-ENV APP_ENV="local"
+ENV APP_ENV="dev"
 
 RUN pecl install -f xdebug \
     && docker-php-ext-enable xdebug
+
+RUN docker-php-ext-install pdo_mysql
+
+# needed for easier installation of some dev packages
+RUN apt-get -y install p7zip-full
+
+RUN echo 'deb [trusted=yes] https://repo.symfony.com/apt/ /' | tee /etc/apt/sources.list.d/symfony-cli.list
+RUN apt update
+RUN apt install -y symfony-cli
