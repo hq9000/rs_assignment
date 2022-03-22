@@ -4,6 +4,7 @@
 namespace Roadsurfer\Controller;
 
 use DateTime;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Roadsurfer\DependencyInjection\CounterGridServiceAware;
 use Roadsurfer\DependencyInjection\CurrentTimeProviderAware;
 use Roadsurfer\DependencyInjection\EntityManagerAware;
@@ -15,6 +16,7 @@ use Roadsurfer\Form\OrderType;
 use Roadsurfer\Util\DayCodeUtil;
 use Roadsurfer\Util\ReportDataProducer;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,6 +34,7 @@ class ApiController
     private const FROM_DAY_CODE_QUERY_PARAM_NAME = 'from';
     const TO_DAY_CODE_QUERY_PARAM_NAME = 'to';
     const DEFAULT_NUMBER_OF_DAYS_IN_REPORT = 7;
+    const MAX_NUM_DAYS_IN_RANGE = 100;
 
     #[Route('/stations/{station}/equipment_usage_report',
         name: 'requirement_availability',
@@ -46,6 +49,8 @@ class ApiController
 
         $this->validateDayCode($startDayCode);
         $this->validateDayCode($endDayCode);
+        $this->validateRange($startDayCode, $endDayCode);
+
         $allCounters = $this->getCounterGridService()->getAllCountersOnStation($station, $startDayCode, $endDayCode);
         return new JsonResponse($this->presentCountersAsReport($allCounters));
     }
@@ -124,6 +129,17 @@ class ApiController
         }
 
         return [intval($startDayCode), intval($endDayCode)];
+    }
+
+    private function validateRange(int $startDayCode, int $endDayCode)
+    {
+        if ($endDayCode < $startDayCode) {
+            throw new BadRequestException('end day is before start day');
+        }
+
+        if (DayCodeUtil::getNumberOfDaysCoveredByDayCodeRange($startDayCode, $endDayCode) > self::MAX_NUM_DAYS_IN_RANGE) {
+            throw new BadRequestException('range is too wide');
+        }
     }
 
 }
