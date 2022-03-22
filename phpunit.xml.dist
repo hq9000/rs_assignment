@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" backupGlobals="false" backupStaticAttributes="false" colors="true" bootstrap="bootstrap.php" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnFailure="false">
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </coverage>
+    <php>
+        <env name="APP_ENV" value="test" force="true"/>
+        <env name="DATABASE_URL" value="mysql://root:Test123123@127.0.0.1:3306/roadsurfer_test" force="true"/>
+        <env name="KERNEL_CLASS" value="Roadsurfer\Kernel"/>
+        <env name="BOOTSTRAP_CLEAR_CACHE_ENV" value="test"/>
+    </php>
+    <testsuites>
+        <testsuite name="TestSuite">
+            <directory suffix="Test.php">./tests</directory>
+        </testsuite>
+    </testsuites>
+    <groups>
+        <exclude>
+            <group>NoTest</group>
+        </exclude>
+    </groups>
+</phpunit>

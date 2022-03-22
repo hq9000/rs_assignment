@@ -1,0 +1,48 @@
+name: PHP Composer
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: bitnami/mysql:8.0.22
+        env:
+          MYSQL_ROOT_PASSWORD: Test123123
+          MYSQL_USER: root
+          MYSQL_PASSWORD: Test123123
+          MYSQL_DATABASE: roadsurfer_test
+          MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
+        ports:
+          - 127.0.0.1:3306:3306
+        options: --name mysql --restart always  --health-cmd "mysqladmin -h 127.0.0.1 ping" --health-interval 10s --health-timeout 5s --health-retries 10
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: PHP version
+      run: |
+        php -v
+
+    - name: Run tests
+      run: php vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist
+
