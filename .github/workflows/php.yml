@@ -39,10 +39,6 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    - name: create db
-      run: |
-        mysql -h 127.0.0.1 -uroot -pTest123123 -e "CREATE DATABASE IF NOT EXISTS roadsurfer_test;"
-
     - name: PHP version
       run: |
         php -v
