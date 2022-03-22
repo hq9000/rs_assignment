@@ -34,9 +34,10 @@ jobs:
         mysql user: root
         mysql password: Test123123
 
+    - name: PHP version
+      run: |
+        php -v
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+    - name: Run tests
+      run: php vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist
 
-    # - name: Run test suite
-    #   run: composer run-script test
