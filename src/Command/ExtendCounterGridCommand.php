@@ -5,7 +5,6 @@ namespace Roadsurfer\Command;
 
 
 use Roadsurfer\DependencyInjection\CounterGridServiceAware;
-use Roadsurfer\Service\CounterGridServiceInterface;
 use Roadsurfer\Util\DatePolicy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

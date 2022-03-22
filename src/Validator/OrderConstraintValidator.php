@@ -36,6 +36,7 @@ class OrderConstraintValidator extends ConstraintValidator
         $this->validateEquipmentAvailability($order, $constraint);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     private function validateDates(Order $order, OrderConstraint $constraint)
     {
         if ($order->getStartDayCode() and $order->getStartDayCode() < DayCodeUtil::generateDayCode(
@@ -61,6 +62,7 @@ class OrderConstraintValidator extends ConstraintValidator
         }
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     private function validateEquipmentAvailability(Order $order, OrderConstraint $constraint)
     {
         foreach ($order->getOrderEquipmentCounters() as $orderEquipmentCounter) {
@@ -114,6 +116,7 @@ class OrderConstraintValidator extends ConstraintValidator
         return DayCodeUtil::generateDayCode($now);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     private function validateInventory(Order $order, OrderConstraint $constraint)
     {
         $seenIds = [];

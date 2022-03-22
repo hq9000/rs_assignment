@@ -7,10 +7,8 @@ namespace Roadsurfer\Form;
 use Roadsurfer\DependencyInjection\EntityManagerAware;
 use Roadsurfer\Entity\EquipmentType;
 use Roadsurfer\Entity\OrderEquipmentCounter;
-use Roadsurfer\Entity\Station;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -50,19 +48,6 @@ class OrderEquipmentCounterType extends AbstractType
             ]
         );
         parent::configureOptions($resolver);
-    }
-
-    private function getEquipmentTypeChoices(): array
-    {
-        /** @var Station[] $allEquipmentTypes */
-        $allEquipmentTypes = $this->getEntityManager()->getRepository(EquipmentType::class)->findAll();
-
-        $res = [];
-        foreach ($allEquipmentTypes as $type) {
-            $res[$type->getName()] = $type->getId();
-        }
-
-        return $res;
     }
 
 }

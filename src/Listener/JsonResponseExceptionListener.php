@@ -13,7 +13,6 @@ class JsonResponseExceptionListener
     /**
      * @param ExceptionEvent $event
      *
-     * @throws Exception
      * @noinspection PhpUnused
      */
     public function onKernelException(ExceptionEvent $event)

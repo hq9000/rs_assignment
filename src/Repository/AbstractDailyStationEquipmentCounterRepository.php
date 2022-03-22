@@ -12,10 +12,10 @@ use Roadsurfer\Entity\Station;
 class AbstractDailyStationEquipmentCounterRepository extends EntityRepository
 {
     /**
-     * @param Station       $station
-     * @param EquipmentType $equipmentType
-     * @param string        $startDayCode
-     * @param string        $endDayCode
+     * @param Station            $station
+     * @param EquipmentType|null $equipmentType
+     * @param string             $startDayCode
+     * @param string             $endDayCode
      *
      * @return AbstractDailyStationEquipmentCounter[]
      */
