@@ -57,3 +57,7 @@ services:
   Roadsurfer\Listener\JsonResponseExceptionListener:
     tags:
       - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+  Roadsurfer\Listener\ApiControllerListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }

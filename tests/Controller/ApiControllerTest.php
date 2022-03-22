@@ -101,7 +101,10 @@ class ApiControllerTest extends DbTestCase
 
         $this->assertEquals($expectedBodyArr, $bodyArr);
 
-        $client->request('GET', '/stations/' . $this->berlin->getId() . '/equipment_usage_report?from=20220323&to=20220323');
+        $client->request(
+            'GET',
+            '/stations/' . $this->berlin->getId() . '/equipment_usage_report?from=20220323&to=20220323'
+        );
         /** @var Response $response */
         $response = $client->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode(), $response->getContent());
@@ -130,16 +133,15 @@ class ApiControllerTest extends DbTestCase
         ];
 
         $this->assertEquals($expectedBodyArr, $bodyArr);
-
-        $client->request('GET', '/stations/' . 123123 . '/equipment_usage_report');
-        $response = $client->getResponse();
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode(), $response->getContent());
     }
 
     public function testGetUsageReportTooWideRange()
     {
         $client = self::$kernel->getContainer()->get('test.client');
-        $client->request('GET', '/stations/' . $this->berlin->getId() . '/equipment_usage_report?from=20200101&to=20220303');
+        $client->request(
+            'GET',
+            '/stations/' . $this->berlin->getId() . '/equipment_usage_report?from=20200101&to=20220303'
+        );
         $response = $client->getResponse();
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode(), $response->getContent());
     }
@@ -180,10 +182,10 @@ class ApiControllerTest extends DbTestCase
         $response = $client->getResponse();
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode(), $response->getContent());
 
-        $bodyArr = json_decode($response->getContent(), true);
+        $bodyArr         = json_decode($response->getContent(), true);
         $expectedBodyArr = [
-            0 => 'Placing this order would make station "Berlin" run out of equipment "Tooth brush" on day 20220322!',
-            1 => 'Placing this order would make station "Berlin" run out of equipment "Towel" on day 20220322!',
+            0 => 'root:Placing this order would make station "Berlin" run out of equipment "Tooth brush" on day 20220322!',
+            1 => 'root:Placing this order would make station "Berlin" run out of equipment "Towel" on day 20220322!',
         ];
 
         $this->assertEquals($expectedBodyArr, $bodyArr);
@@ -202,27 +204,29 @@ class ApiControllerTest extends DbTestCase
         $this->assertEquals(0, $this->getEntityCount(Order::class));
         $this->assertEquals(0, $this->getEntityCount(OrderEquipmentCounter::class));
 
-
         $client = self::$kernel->getContainer()->get('test.client');
+
+        $postRequestBody = [
+            'startStation'           => $this->berlin->getId(),
+            'endStation'             => $this->frankfurt->getId(),
+            'startDayCode'           => '20220322',
+            'endDayCode'             => '20220323',
+            'orderEquipmentCounters' => [
+                [
+                    'equipmentType' => $this->toothBrush->getId(),
+                    'count'         => 1,
+                ],
+                [
+                    'equipmentType' => $this->towel->getId(),
+                    'count'         => 1,
+                ],
+            ],
+        ];
+
         $client->request(
             'POST',
             '/orders',
-            [
-                'startStation'           => $this->berlin->getId(),
-                'endStation'             => $this->frankfurt->getId(),
-                'startDayCode'           => '20220322',
-                'endDayCode'             => '20220323',
-                'orderEquipmentCounters' => [
-                    [
-                        'equipmentType' => $this->toothBrush->getId(),
-                        'count'         => 1,
-                    ],
-                    [
-                        'equipmentType' => $this->towel->getId(),
-                        'count'         => 1,
-                    ],
-                ],
-            ]
+            $postRequestBody
         );
 
         /** @var Response $response */

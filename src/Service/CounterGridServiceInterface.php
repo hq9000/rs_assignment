@@ -40,5 +40,10 @@ interface CounterGridServiceInterface
         string $endDayCode
     );
 
-    public function applyEquipmentShipment(Station $station, EquipmentType $equipmentType, string $dayCode, int $count);
+    public function applyEquipmentShipment(
+        Station $station,
+        EquipmentType $equipmentType,
+        string $dayCode,
+        int $count
+    );
 }

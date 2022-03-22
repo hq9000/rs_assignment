@@ -4,7 +4,6 @@
 namespace Roadsurfer\Controller;
 
 use DateTime;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Roadsurfer\DependencyInjection\CounterGridServiceAware;
 use Roadsurfer\DependencyInjection\CurrentTimeProviderAware;
 use Roadsurfer\DependencyInjection\EntityManagerAware;
@@ -64,7 +63,6 @@ class ApiController
     ): JsonResponse {
          $order = new Order();
          $form = $this->getFormFactory()->create(OrderType::class, $order);
-
          $form->handleRequest($request);
 
          if ($form->isSubmitted() and $form->isValid()) {
@@ -102,7 +100,11 @@ class ApiController
 
         $res    = [];
         foreach ($errors as $error) {
-            $res[] = $error->getMessage();
+            $path = $error->getOrigin()->getPropertyPath();
+            if (!$path) {
+                $path = "root";
+            }
+            $res[] = $path . ':' . $error->getMessage();
         }
 
         return $res;
