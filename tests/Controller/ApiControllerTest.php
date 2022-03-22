@@ -136,6 +136,22 @@ class ApiControllerTest extends DbTestCase
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode(), $response->getContent());
     }
 
+    public function testGetUsageReportTooWideRange()
+    {
+        $client = self::$kernel->getContainer()->get('test.client');
+        $client->request('GET', '/stations/' . $this->berlin->getId() . '/equipment_usage_report?from=20200101&to=20220303');
+        $response = $client->getResponse();
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode(), $response->getContent());
+    }
+
+    public function testGetUsageReportNonexistentStation()
+    {
+        $client = self::$kernel->getContainer()->get('test.client');
+        $client->request('GET', '/stations/534234/equipment_usage_report?from=20200101&to=20220303');
+        $response = $client->getResponse();
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode(), $response->getContent());
+    }
+
     public function testPostNewOrderValidationFailure()
     {
         $client = self::$kernel->getContainer()->get('test.client');

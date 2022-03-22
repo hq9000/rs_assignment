@@ -52,3 +52,8 @@ services:
       - [ setEntityManager, [ '@doctrine.orm.default_entity_manager' ] ]
     tags:
       - { name: form.type, alias: Roadsurfer\Form\OrderEquipmentCounterType }
+
+
+  Roadsurfer\Listener\JsonResponseExceptionListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
