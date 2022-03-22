@@ -13,6 +13,7 @@ use Roadsurfer\Tests\Base\DbTestCase;
 use Roadsurfer\Util\DayCodeUtil;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class OrderValidationTest extends DbTestCase
 {
@@ -22,7 +23,7 @@ class OrderValidationTest extends DbTestCase
 
         $now = DateTime::createFromFormat('Y-m-d H:i:s', '2022-03-21 06:32:33');
         $currentTimeProvider->setFixatedTime($now);
-        $validator = self::getContainer()->get('validator');
+        $validator = static::getContainer()->get(ValidatorInterface::class);
 
         $order = new Order;
 
@@ -39,7 +40,7 @@ class OrderValidationTest extends DbTestCase
         $this->assertEquals($expectedDigest, $digest);
     }
 
-    public function testSystemNotReady_ThenRunningOutOfEquipment_ThenHappy()
+    public function testSystemNotReady_nnRunningOutOfEquipment_ThenHappy()
     {
         $berlin     = $this->createStation('Berlin');
         $toothBrush = $this->createEquipmentType('Tooth brush');
@@ -67,7 +68,7 @@ class OrderValidationTest extends DbTestCase
         $order->setStartDayCode($todayDayCode);
         $order->setEndDayCode($tomorrowDayCode);
 
-        $validator  = self::getContainer()->get('validator');
+        $validator  = static::getContainer()->get(ValidatorInterface::class);
         $violations = $validator->validate($order);
         $digest     = $this->produceViolationDigest($violations);
 
