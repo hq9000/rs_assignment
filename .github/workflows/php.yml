@@ -35,8 +35,8 @@ jobs:
         mysql password: Test123123
 
     - name: create db
-        run: |
-          mysql -h 127.0.0.1 -uroot -pTest123123 -e "CREATE DATABASE IF NOT EXISTS roadsurfer_test;"
+      run: |
+        mysql -h 127.0.0.1 -uroot -pTest123123 -e "CREATE DATABASE IF NOT EXISTS roadsurfer_test;"
 
     - name: PHP version
       run: |
