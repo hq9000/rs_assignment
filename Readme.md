@@ -14,10 +14,14 @@
 
 - completely normalized schema is unfeasible. Complex joins and/or app-side calculation will be slow, hard to maintain and not scalable as volume of order grows. Certain denormalization is needed.
 - we will create a so called "counter grid". I.e. for each station and equipment type, **daily** counters for "on hand" and "booked" number of items will be maintained:
+
   ![image](https://user-images.githubusercontent.com/21345604/159531361-abf47771-d15c-41d2-87b4-cfc3373cea95.png)
 - this grid will be automatically "extended" (cron job calling a CLI command) 1 year ahead (configurable)
 - as orders are placed, they are first validated if there is enough equipment in the starting station and if any existing future orders will still have enough equipment.
 - successfully placing an order "updates" the grid for origin and target stations (can be the same)
+
+### Stack
+Symfony 5, Mysql
 
 ### Entities
 ![image](https://user-images.githubusercontent.com/21345604/159418967-7fcd7c40-0abd-413d-827e-f27d734e0c18.png)
