@@ -24,7 +24,7 @@
 Symfony 5, Mysql
 
 ### Entities
-![image](https://user-images.githubusercontent.com/21345604/159418967-7fcd7c40-0abd-413d-827e-f27d734e0c18.png)
+![image](https://user-images.githubusercontent.com/21345604/159580811-8b76a18e-2174-483e-87df-19c8391c2137.png)
 
 ### API
 
