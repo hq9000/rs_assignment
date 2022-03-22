@@ -36,7 +36,7 @@ class OrderTypeTest extends DbTestCase
         $counterGridService->getEntityManager()->clear();
 
         /** @var FormFactory $formFactory */
-        $formFactory = self::$kernel->getContainer()->get('form.factory');
+        $formFactory = static::getContainer()->get('form.factory');
         $order       = new Order;
 
         $form = $formFactory->create(OrderType::class, $order);
@@ -62,6 +62,7 @@ class OrderTypeTest extends DbTestCase
 
         $this->assertTrue($form->isSubmitted());
         $this->assertTrue($form->isValid());
+        $this->assertTrue($form->isSynchronized());
     }
 
 

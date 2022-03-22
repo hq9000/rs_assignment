@@ -9,7 +9,6 @@ use Roadsurfer\Entity\Order;
 use Roadsurfer\Entity\Station;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -67,17 +66,9 @@ class OrderType extends AbstractType
         parent::configureOptions($resolver);
     }
 
-    private function generateStationChoices(): array
+    public function getBlockPrefix()
     {
-        /** @var Station[] $allStations */
-        $allStations = $this->getEntityManager()->getRepository(Station::class)->findAll();
-
-        $res = [];
-        foreach ($allStations as $station) {
-            $res[$station->getName()] = $station->getId();
-        }
-
-        return $res;
+        return '';
     }
 
 }
