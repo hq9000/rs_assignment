@@ -39,8 +39,8 @@ RUN pecl install -f xdebug \
 RUN docker-php-ext-install pdo_mysql
 
 # needed for easier installation of some dev packages
-RUN apt-get install p7zip-full
+RUN apt-get -y install p7zip-full
 
-RUN deb [trusted=yes] https://repo.symfony.com/apt/ /' | sudo tee /etc/apt/sources.list.d/symfony-cli.list
+RUN echo 'deb [trusted=yes] https://repo.symfony.com/apt/ /' | tee /etc/apt/sources.list.d/symfony-cli.list
 RUN apt update
-RUN apt install symfony-cli
+RUN apt install -y symfony-cli
