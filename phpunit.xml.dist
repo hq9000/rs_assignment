@@ -14,7 +14,7 @@
     </php>
     <testsuites>
         <testsuite name="TestSuite">
-            <directory suffix="Test.php">./src/SymfonyBundle/Test</directory>
+            <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
     <groups>
