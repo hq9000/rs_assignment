@@ -88,5 +88,5 @@ Symfony 5, Mysql
 }
 ```
 
-## Possible improvements
-- [ ] Use advisory locking to forbid any manipulations with grid when it is being extended to maintain integrity
+## Possible improvements / future work
+see issues: https://github.com/hq9000/rs_assignment/issues
