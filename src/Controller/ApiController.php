@@ -1,5 +1,6 @@
 <?php
 
+/** @noinspection PhpUnused */
 
 namespace Roadsurfer\Controller;
 
@@ -13,8 +14,8 @@ use Roadsurfer\Entity\Order;
 use Roadsurfer\Entity\Station;
 use Roadsurfer\Form\OrderType;
 use Roadsurfer\Util\DayCodeUtil;
+use Roadsurfer\Util\FormErrorPresenterUtil;
 use Roadsurfer\Util\ReportDataProducer;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -73,7 +74,7 @@ class ApiController
              });
              return new JsonResponse([], Response::HTTP_CREATED);
          } else {
-             return new JsonResponse($this->createDataOnInvalidForm($form), Response::HTTP_BAD_REQUEST);
+             return new JsonResponse(FormErrorPresenterUtil::presentErrors($form), Response::HTTP_BAD_REQUEST);
          }
     }
 
@@ -92,22 +93,6 @@ class ApiController
         if ($code < 20000000 or $code > 30000000) {
             throw new NotFoundHttpException();
         }
-    }
-
-    private function createDataOnInvalidForm(FormInterface $form): array
-    {
-        $errors = $form->getErrors(deep: true, flatten: true);
-
-        $res    = [];
-        foreach ($errors as $error) {
-            $path = $error->getOrigin()->getPropertyPath();
-            if (!$path) {
-                $path = "root";
-            }
-            $res[] = $path . ':' . $error->getMessage();
-        }
-
-        return $res;
     }
 
     /**
