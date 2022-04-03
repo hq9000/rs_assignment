@@ -12,9 +12,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: "orders")]
-#[OrderConstraint]
+#[Assert\GroupSequence(['Order', self::VALIDATION_GROUP_ENTIRE_OBJECT])]
+#[OrderConstraint(groups: [self::VALIDATION_GROUP_ENTIRE_OBJECT])]
 class Order
 {
+    const VALIDATION_GROUP_ENTIRE_OBJECT = 'entire_object';
+
     use HavingId;
 
     #[Assert\NotNull]
